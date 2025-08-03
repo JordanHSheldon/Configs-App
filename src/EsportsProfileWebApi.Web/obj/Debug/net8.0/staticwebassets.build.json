@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "T/v5GHkVkiEBI2bg1NuPCW//JPV9tyoK6/Zn5hZNiTI=",
+  "Source": "EsportsProfileWebApi.Web",
+  "BasePath": "_content/EsportsProfileWebApi.Web",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
