@@ -1,0 +1,100 @@
+## .NET GitIgnore Template
+
+# Build results
+bin/
+obj/
+[Ll]og/
+out/
+artifacts/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider project files
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+
+# Mac and Linux files
+.DS_Store
+*.swp
+
+# Windows thumbnail cache
+Thumbs.db
+
+# DotCover
+*.dotCover
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Azure Web Apps publish settings
+PublishProfiles/
+
+# Files built by Visual Studio
+*.dbmdl
+*.bak
+*.backup
+*.log
+
+# Entity Framework
+*.jfm
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Paket
+.paket/
+paket-files/
+
+# dotnet CLI
+project.assets.json
+project.nuget.cache
+*.deps.json
+
+# Others
+*.sln.cache
+*.vs/
+*.tfignore
+*.tlog
+*.cache
+*.pdb
+*.mdb
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# StyleCop
+StyleCopReport.xml
+
+# Coverage tools
+coverage*.json
+coverage*.xml
+coverage*.info
+*.lcov
+coverage/
+
+# Logs
+*.log
+
+# Test Results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Temporary files
+~$*

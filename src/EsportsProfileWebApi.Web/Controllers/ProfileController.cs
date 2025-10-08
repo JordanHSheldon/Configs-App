@@ -9,14 +9,19 @@ using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DataController(IDataOrchestrator dataOrchestrator, IMapper mapper) : Controller
+public class ProfileController(
+    IDataOrchestrator dataOrchestrator,
+    IMapper mapper) : Controller
 {
-    private readonly IDataOrchestrator _dataOrchestrator = dataOrchestrator ?? throw new NotImplementedException();
-    private readonly IMapper _mapper = mapper ?? throw new NotImplementedException();
+    private readonly IDataOrchestrator _dataOrchestrator = dataOrchestrator
+        ?? throw new NotImplementedException();
+    private readonly IMapper _mapper = mapper
+        ?? throw new NotImplementedException();
 
     [HttpPost]
     [Route("GetUserProfiles")]
-    public async Task<List<GetPaginatedUsersResponseDto>> GetPaginatedUsersAsync(GetPaginatedUsersRequestDTO req)
+    public async Task<IEnumerable<GetPaginatedUsersResponseDto>> GetPaginatedUsersAsync(
+        GetPaginatedUsersRequestDTO req)
     {
         var request = _mapper.Map<GetPaginatedUsersRequestModel>(req);
         var result = await _dataOrchestrator.GetPaginatedUsersAsync(request);

@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/EsportsProfileWebApi.Web.props" />
-</Project>

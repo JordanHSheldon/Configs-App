@@ -11577,33 +11577,32 @@
     ]
   },
   "packageFolders": {
-    "/Users/jordansheldon/.nuget/packages/": {}
+    "/home/jordan/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/jordansheldon/code/Configs-App/src/Tests/Tests.csproj",
+      "projectUniqueName": "/home/jordan/Code/Configs-App/src/Tests/Tests.csproj",
       "projectName": "Tests",
-      "projectPath": "/Users/jordansheldon/code/Configs-App/src/Tests/Tests.csproj",
-      "packagesPath": "/Users/jordansheldon/.nuget/packages/",
-      "outputPath": "/Users/jordansheldon/code/Configs-App/src/Tests/obj/",
+      "projectPath": "/home/jordan/Code/Configs-App/src/Tests/Tests.csproj",
+      "packagesPath": "/home/jordan/.nuget/packages/",
+      "outputPath": "/home/jordan/Code/Configs-App/src/Tests/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/jordansheldon/.nuget/NuGet/NuGet.Config"
+        "/home/jordan/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "/usr/local/share/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/jordansheldon/code/Configs-App/src/EsportsProfileWebApi.Web/EsportsProfileWebApi.Web.csproj": {
-              "projectPath": "/Users/jordansheldon/code/Configs-App/src/EsportsProfileWebApi.Web/EsportsProfileWebApi.Web.csproj"
+            "/home/jordan/Code/Configs-App/src/EsportsProfileWebApi.Web/EsportsProfileWebApi.Web.csproj": {
+              "projectPath": "/home/jordan/Code/Configs-App/src/EsportsProfileWebApi.Web/EsportsProfileWebApi.Web.csproj"
             }
           }
         }
@@ -11617,8 +11616,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.200"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -11656,22 +11654,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.15, 8.0.15]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.15, 8.0.15]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

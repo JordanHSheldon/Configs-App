@@ -12,8 +12,10 @@ using Responses.User;
 [ApiController]
 public class UserController(IUserOrchestrator userOrchestrator, IMapper mapper) : Controller
 {
-    private readonly IUserOrchestrator _userOrchestrator = userOrchestrator ?? throw new NotImplementedException();
-    private readonly IMapper _mapper = mapper ?? throw new NotImplementedException();
+    private readonly IUserOrchestrator _userOrchestrator = userOrchestrator
+        ?? throw new NotImplementedException();
+    private readonly IMapper _mapper = mapper
+        ?? throw new NotImplementedException();
 
     [HttpPost]
     [Route("Register")]

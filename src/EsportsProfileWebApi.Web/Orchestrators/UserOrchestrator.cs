@@ -47,7 +47,7 @@ public class UserOrchestrator(IUserRepository userRepository, IConfiguration con
     private const string ErrorResult = "Error creating user data";
     private const string UserExistsResult = "User already exists";
     private readonly string clientID = "";
-    private readonly string clientSecret = "nxaB5y27zdP6O_ULeRREpwaCkG46uWFJ";
+    private readonly string clientSecret = "";
     private readonly string redirectURI = "https://localhost:7191/api/user/DiscordRedirect";
     private readonly string tokenURL = "https://discord.com/api/oauth2/token";
 
