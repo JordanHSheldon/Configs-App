@@ -1,34 +1,51 @@
+name: Build, Replace Secrets, and Publish Private Package
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/EsportsProfileWebApi.Web
+        working-directory: ./src/EsportsProfileWebApi.Web  # set all steps to this folder
+
     steps:
+      # 1️⃣ Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup .NET SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
+      # 3️⃣ Replace secrets in appsettings.json
       - name: Replace secrets in appsettings.json
         run: |
           sed -i "s|{{ CONNECTION_STRING }}|${{ secrets.CONNECTION_STRING }}|g" ./appsettings.json
           sed -i "s|{{ AUTHENTICATION_KEY }}|${{ secrets.AUTHENTICATION_KEY }}|g" ./appsettings.json
 
+      # 4️⃣ Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
+      # 5️⃣ Build project
       - name: Build project
         run: dotnet build --configuration Release --no-restore
 
+      # 6️⃣ Pack project into NuGet package
       - name: Pack project
         run: dotnet pack --configuration Release --no-build -o ./packages
 
+      # 7️⃣ Publish NuGet package to GitHub Packages
       - name: Publish to GitHub Packages
-        run: dotnet nuget push "./packages/*.nupkg" \
-          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
-          --api-key "${{ secrets.GITHUB_TOKEN }}" \
-          --skip-duplicate
+        run: |
+          dotnet nuget push "./packages/*.nupkg" \
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            --api-key "${{ secrets.GITHUB_TOKEN }}" \
+            --skip-duplicate
