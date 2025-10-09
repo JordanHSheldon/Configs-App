@@ -1,0 +1,41 @@
+name: Build, Replace Secrets, and Publish Private Package
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x' # change if needed
+
+      # Replace {{PLACEHOLDERS}} in appsettings.json using secrets
+      - name: Replace secrets in appsettings.json
+        run: |
+          sed -i "s|{{ CONNECTION_STRING }}|${{ secrets.CONNECTION_STRING }}|g" appsettings.json
+          sed -i "s|{{ AUTHENTICATION_KEY }}|${{ secrets.AUTHENTICATION_KEY }}|g" appsettings.json
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Pack project
+        run: dotnet pack --configuration Release --no-build -o ./packages
+
+      # Publish the NuGet package privately to GitHub Packages
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "./packages/*.nupkg" \
+          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+          --api-key "${{ secrets.GITHUB_TOKEN }}" \
+          --skip-duplicate
