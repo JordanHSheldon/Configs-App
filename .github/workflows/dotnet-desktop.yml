@@ -47,7 +47,9 @@ jobs:
               --no-build \
               --output ./packages \
               /p:OutputPath=./bin/Release
-
+      - name: Check files
+        run: ls -a
+        
       # 7️⃣ Publish NuGet package to GitHub Packages
       - name: Publish to GitHub Packages
         run: |
