@@ -42,7 +42,7 @@ jobs:
       - name: Pack project
         run: |
             mkdir -p ./packages
-            dotnet pack YourProject.csproj \
+            dotnet pack EsportsProfileWebApi.Web.csproj \
               --configuration Release \
               --no-build \
               --output ./packages \
