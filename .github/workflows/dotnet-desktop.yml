@@ -16,13 +16,15 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x' # change if needed
+          dotnet-version: '8.0.x' # change if needed
 
       # Replace {{PLACEHOLDERS}} in appsettings.json using secrets
       - name: Replace secrets in appsettings.json
+      
         run: |
-          sed -i "s|{{ CONNECTION_STRING }}|${{ secrets.CONNECTION_STRING }}|g" ./src/EsportsProfileWebApi.Web/appsettings.json
-          sed -i "s|{{ AUTHENTICATION_KEY }}|${{ secrets.AUTHENTICATION_KEY }}|g" ./src/EsportsProfileWebApi.Web/appsettings.json
+          cd "./src/EsportsProfileWebApi.Web/"
+          sed -i "s|{{ CONNECTION_STRING }}|${{ secrets.CONNECTION_STRING }}|g" ./appsettings.json
+          sed -i "s|{{ AUTHENTICATION_KEY }}|${{ secrets.AUTHENTICATION_KEY }}|g" ./appsettings.json
 
       - name: Restore dependencies
         run: dotnet restore
