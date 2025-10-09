@@ -7,6 +7,7 @@
     <SelfContained>true</SelfContained>
     <UserSecretsId>e40ddd0e-928d-45bf-9e2a-e1910f4032f4</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
