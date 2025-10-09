@@ -41,9 +41,12 @@ jobs:
       # 6️⃣ Pack project into NuGet package
       - name: Pack project
         run: |
-          mkdir -p ./packages
-          dotnet pack --configuration Release -o ./packages
-          ls -la ./packages
+            mkdir -p ./packages
+            dotnet pack YourProject.csproj \
+              --configuration Release \
+              --no-build \
+              --output ./packages \
+              /p:OutputPath=./bin/Release
 
       # 7️⃣ Publish NuGet package to GitHub Packages
       - name: Publish to GitHub Packages
