@@ -43,6 +43,7 @@ jobs:
         run: |
           mkdir -p ./packages
           dotnet pack --configuration Release --no-build -o ./packages
+          ls -la ./packages
 
       # 7️⃣ Publish NuGet package to GitHub Packages
       - name: Publish to GitHub Packages
