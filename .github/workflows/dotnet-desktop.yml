@@ -36,7 +36,7 @@ jobs:
 
       # 5️⃣ Build project
       - name: Build project
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release ./bin/Release
 
       # 6️⃣ Pack project into NuGet package
       - name: Pack project
