@@ -47,10 +47,17 @@ jobs:
               --no-build \
               --output ./packages \
               /p:OutputPath=./bin/Release
-      - name: Check files
-        run:  |
-          echo "📦 Listing contents of ./packages:"
-          ls -la ./packages
+      - name: Check and list .nupkg files
+        run: |
+          echo "📦 Checking for .nupkg files in ./packages..."
+          if [ -d "./packages" ]; then
+            echo "✅ ./packages directory exists."
+            find ./packages -type f -print || echo "⚠️ No files found in ./packages."
+          else
+            echo "❌ ./packages directory does not exist."
+            exit 1
+          fi
+
         
       # 7️⃣ Publish NuGet package to GitHub Packages
       - name: Publish to GitHub Packages
