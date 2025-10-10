@@ -1,68 +1,38 @@
-name: Build, Replace Secrets, and Publish Private Package
+name: Build and Deploy ASP.NET Core App
 
 on:
-  workflow_dispatch: {}
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./src/EsportsProfileWebApi.Web  # set all steps to this folder
 
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup .NET SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '8.0.x' # or your version
 
-      # 3️⃣ Replace secrets in appsettings.json
-      - name: Replace secrets in appsettings.json
-        run: |
-          sed -i "s|{{ CONNECTION_STRING }}|${{ secrets.CONNECTION_STRING }}|g" ./appsettings.json
-          sed -i "s|{{ AUTHENTICATION_KEY }}|${{ secrets.AUTHENTICATION_KEY }}|g" ./appsettings.json
-
-      # 4️⃣ Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # 5️⃣ Build project
-      - name: Build project
-        run: dotnet build --configuration Release -o ./bin/Release
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-      # 6️⃣ Pack project into NuGet package
-      - name: Pack project
-        run: |
-            mkdir -p ./packages
-            dotnet pack EsportsProfileWebApi.Web.csproj \
-              --configuration Release \
-              --no-build \
-              --output ./packages \
-              /p:OutputPath=./bin/Release
-      - name: Check and list .nupkg files
-        run: |
-          echo "📦 Checking for .nupkg files in ./packages..."
-          if [ -d "./packages" ]; then
-            echo "✅ ./packages directory exists."
-            find ./packages -type f -print || echo "⚠️ No files found in ./packages."
-          else
-            echo "❌ ./packages directory does not exist."
-            exit 1
-          fi
+      # 👇 This is the important part
+      - name: Publish app
+        run: dotnet publish --configuration Release --output ./publish
 
-        
-      # 7️⃣ Publish NuGet package to GitHub Packages
-      - name: Publish to GitHub Packages
-        run: |
-          dotnet nuget push "./packages/*.nupkg" \
-            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
-            --api-key "${{ secrets.GITHUB_TOKEN }}" \
-            --skip-duplicate
+      # 🚀 Deploy step (example)
+      - name: Deploy to server via SSH
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "./publish/*"
+          target: "/var/www/yourapp" # change as we do not put the application here
