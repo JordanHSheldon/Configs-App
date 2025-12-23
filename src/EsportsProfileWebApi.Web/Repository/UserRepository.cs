@@ -1,66 +1,48 @@
 ﻿namespace EsportsProfileWebApi.Web.Repository;
 
 using Dapper;
-using Orchestrators.Models.User;
-using Microsoft.Extensions.Configuration;
 using System.Data;
 using EsportsProfileWebApi.Web.Orchestrators;
 using Npgsql;
 
-public class UserRepository(IConfiguration configuration) : IUserRepository
+public class UserRepository() : IUserRepository
 {
-    private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection")
-                                                ?? throw new NotImplementedException();
-
-   public async Task<int> RegisterUser(UserRegisterRequestModel request)
-    {
-        await using var connection = new NpgsqlConnection(_connectionString);
-        await connection.OpenAsync();
-
-        var parameters = new DynamicParameters();
-        parameters.Add("@Email", request.Email, DbType.String);
-        parameters.Add("@Password", Helpers.PasswordHashing.HashPassword(request.Password), DbType.String);
-        parameters.Add("@Username", request.Username, DbType.String);
-
-        string sql = "SELECT register_user(@Email, @Password, @Username);";
-        int userId = await connection.QuerySingleAsync<int>(sql, parameters);
-
-        await connection.CloseAsync();
-
-        return userId;
-    }
-
-
-    public async Task<int> LoginUser(UserLoginRequestModel request)
-    {
-        await using var connection = new NpgsqlConnection(_connectionString);
-        await connection.OpenAsync();
-
-        DynamicParameters parameters = new ();
-        parameters.Add("@user_password", Helpers.PasswordHashing.HashPassword(request.Password), DbType.String);
-        parameters.Add("@user_email", request.Email, DbType.String);
-
-        string sql = "SELECT login_user(@user_password, @user_email);";
-        int userId = await connection.QuerySingleAsync<int>(sql, parameters);
-
-        await connection.CloseAsync();  
-
-        return userId;
-    }   
+    private readonly string _connectionString = Environment.GetEnvironmentVariable("connection_string")
+        ?? throw new NotImplementedException();
 
     public async Task<int> DiscordLogin(DiscordUserData discordUserData)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        DynamicParameters parameters = new ();
-        parameters.Add("@email", discordUserData.email, DbType.String);
-        parameters.Add("@username", discordUserData.username, DbType.String);
-        parameters.Add("@discord_id", discordUserData.id, DbType.String);
+        DynamicParameters parameters = new();
+        parameters.Add("@p_email", discordUserData.email, DbType.String);
+        parameters.Add("@p_username", discordUserData.username, DbType.String);
+        parameters.Add("@p_discord_id", discordUserData.id, DbType.String);
+        parameters.Add("@p_avatar", discordUserData.avatar, DbType.String);
 
-        var userId = await connection.QueryFirstOrDefaultAsync<int>("discord_login_user", parameters, commandType: CommandType.StoredProcedure);
-        
-        await connection.CloseAsync();  
+        string sql = "select * from discord_login_or_register_user( @p_email, @p_username, @p_discord_id, @p_avatar);";
+        var userId = await connection.QueryFirstOrDefaultAsync<int>(sql,parameters);
+
+        await connection.CloseAsync();
+
+        return userId;
+    }
+
+    public async Task<int> SteamLogin(SteamUserData steamUserData)
+    {
+        await using var connection = new NpgsqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        DynamicParameters parameters = new();
+        parameters.Add("@p_username", steamUserData.Username, DbType.String);
+        parameters.Add("@p_steam_id", steamUserData.SteamID, DbType.String);
+        parameters.Add("@p_avatar", steamUserData.Avatar, DbType.String);
+
+        string sql = "select * from steam_login_or_register_user(@p_username, @p_steam_id, @p_avatar);";
+        var userId = await connection.QueryFirstOrDefaultAsync<int>(sql,parameters);
+
+        await connection.CloseAsync();
 
         return userId;
     }

@@ -3,25 +3,24 @@
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Orchestrators.Models.Data;
-using Entities.Data;
 using Dapper;
 using System.Data;
 using Npgsql;
 
-public class DataRepository(IConfiguration configuration) : IDataRepository
+public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
 {
-    private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection")
+    private readonly string _connectionString = Environment.GetEnvironmentVariable("connection_string")
         ?? throw new NotImplementedException();
+    
+    private readonly ILogger<DataRepository> _logger = logger;
 
     public async Task<UpdateDataResponseModel> UpdateData(UpdateDataRequestModel request)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        if(Int32.TryParse(request.Id, out int userId) == false)
-        {
+        if(!int.TryParse(request.Id, out int userId))
             throw new ArgumentException("Invalid user ID format.");
-        }
 
         DynamicParameters parameters = new ();
         parameters.Add("@p_user_id",userId, dbType: DbType.String);
@@ -56,8 +55,9 @@ public class DataRepository(IConfiguration configuration) : IDataRepository
     public async Task<DataEntity> GetProfileData(GetProfileRequestModel request)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        
-        if(Int32.TryParse(request.Id, out int userId) == false)
+        _logger.LogInformation($"DATA LOGGED :{request?.Id}");
+
+        if(Int32.TryParse(request?.Id, out int userId) == false)
         {
             throw new ArgumentException("Invalid user ID format.");
         }
@@ -75,17 +75,45 @@ public class DataRepository(IConfiguration configuration) : IDataRepository
         return profile;
     }
 
+    public async Task<ProfileEntity> GetProfile(GetProfileRequestModel request)
+    {
+        await using var connection = new NpgsqlConnection(_connectionString);
+
+        if(int.TryParse(request?.Id, out int userId) == false)
+            throw new ArgumentException("Invalid user ID format.");
+
+        DynamicParameters parameters = new ();
+        parameters.Add("@user_id", userId, dbType: DbType.Int16);
+        
+        await connection.OpenAsync();
+
+        string sql = "SELECT * FROM getProfile(@user_id);";
+        ProfileEntity profile = await connection.QuerySingleAsync<ProfileEntity>(sql, parameters);
+
+        await connection.CloseAsync();
+
+        return profile;
+    }
+
     public async Task<List<DataEntity>> GetPaginatedUsersAsync(GetPaginatedUsersRequestModel req)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
- 
-        var sql = $"[dbo].[get_paginated_users]";
-        var users = await connection.QueryAsync<DataEntity>(sql);
+        try{
+            var sql = $"SELECT * FROM get_user_profiles();";
 
-        await connection.CloseAsync();
-        
-        return [..users];
+            IEnumerable<DataEntity> users = await connection.QueryAsync<DataEntity>(sql);
+
+            await connection.CloseAsync();
+            
+            return [..users];
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        return [];
     }
 
     public async Task<List<PeripheralEntity>> GetPeripheralsAsync()

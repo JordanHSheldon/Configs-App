@@ -1,4 +1,4 @@
-﻿namespace EsportsProfileWebApi.Web.Repository.Entities.User;
+﻿namespace EsportsProfileWebApi.Web.Repository.Entities;
 
 public class UserEntity
 {

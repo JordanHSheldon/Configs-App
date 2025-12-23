@@ -1,4 +1,4 @@
-﻿namespace EsportsProfileWebApi.Web.Repository.Entities.Data;
+﻿namespace EsportsProfileWebApi.Web.Repository;
 
 public class DataEntity
 {
@@ -15,4 +15,6 @@ public class DataEntity
     public string? Headset { get; set; }
 
     public string? Monitor { get; set; }
+
+    public string? Avatar { get;set; }
 }

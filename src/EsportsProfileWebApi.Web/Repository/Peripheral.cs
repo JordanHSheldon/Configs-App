@@ -1,4 +1,4 @@
-namespace EsportsProfileWebApi.Web.Repository.Entities.Data;
+namespace EsportsProfileWebApi.Web.Repository;
 
 public class PeripheralEntity
 {

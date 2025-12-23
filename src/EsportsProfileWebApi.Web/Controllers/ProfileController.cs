@@ -11,8 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 public class ProfileController(
     IDataOrchestrator dataOrchestrator,
+    ILogger<UserController> logger,
     IMapper mapper) : Controller
 {
+
+    private readonly ILogger<UserController> _logger = logger;
     private readonly IDataOrchestrator _dataOrchestrator = dataOrchestrator
         ?? throw new NotImplementedException();
     private readonly IMapper _mapper = mapper
@@ -31,13 +34,23 @@ public class ProfileController(
     [Authorize]
     [HttpPost]
     [Route("GetUserProfile")]
-    public async Task<GetDataResponseDTO> GetProfileData()
+    public async Task<GetDataResponseDTO?> GetProfileData()
     {
-        var request = new GetProfileRequestModel();
-        var id = HttpContext?.User?.Claims?.First(c => c.Type == "Id")?.Value;
-        request.Id = id;
-        var result = await _dataOrchestrator.GetProfileData(request);
-        return _mapper.Map<GetDataResponseDTO>(result);
+        try {
+            var request = new GetProfileRequestModel
+            {
+                Id = HttpContext.User.Identity?.Name
+            };
+
+            var result = await _dataOrchestrator.GetProfileData(request);
+            return _mapper.Map<GetDataResponseDTO>(result);
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e.Message);
+        }
+
+        return null;
     }
 
     [HttpPost]
@@ -49,15 +62,17 @@ public class ProfileController(
         return _mapper.Map<GetDataResponseDTO>(result);
     }
 
-    [Authorize]
     [HttpPost]
     [Route("UpdateUserPeripherals")]
-    public async Task<UpdateDataResponseDTO> UpdateData(UpdateUserPeripheralsRequestDto request)
+    public async Task<UpdateDataResponseDTO?> UpdateData(UpdateUserPeripheralsRequestDto request)
     {
+        var userId = HttpContext.Request.Cookies["user_id"];
+        if (userId == null)
+            return null;
+            
         var req = mapper.Map<UpdateUserPeripheralsRequest>(request);
         var id = HttpContext?.User?.Claims?.First(c => c.Type == "Id")?.Value;
-        int userId = int.Parse(id ?? "0");
-        req.UserId = userId;
+        req.UserId = int.Parse(userId);
         var result = await _dataOrchestrator.UpdateUserPeripherals(req);
         return _mapper.Map<UpdateDataResponseDTO>(result);
     }

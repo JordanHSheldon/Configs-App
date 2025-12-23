@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace EsportsProfileWebApi.Web.Extensions;
+﻿namespace EsportsProfileWebApi.Web.Extensions;
 
 public static class CorsService
 {   
@@ -12,9 +10,10 @@ public static class CorsService
             options.AddPolicy("AllowSpecificOrigin",
                 builder =>
                 {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyHeader()
-                           .WithMethods("POST");
+                    builder.WithOrigins("https://app.configs.cc")
+                        .AllowCredentials()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
                 });
         });
 

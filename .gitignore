@@ -1,5 +1,8 @@
 ## .NET GitIgnore Template
 
+# custom scripts ignore
+*.sh
+
 # Build results
 bin/
 obj/

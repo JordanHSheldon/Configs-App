@@ -15,6 +15,8 @@ builder.Services.AddSingleton<IUserOrchestrator, UserOrchestrator>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddCustomCors(builder);
+builder.Logging.AddConsole();
+builder.Logging.AddSystemdConsole();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -24,8 +26,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowSpecificOrigin");
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.Run("http://0.0.0.0:5000");
+app.Run("https://0.0.0.0:5000");

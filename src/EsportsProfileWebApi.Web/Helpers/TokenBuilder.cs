@@ -8,6 +8,7 @@ using System.Text;
 public class TokenBuilder(IConfiguration config)
 {
     private readonly int _expiryInMinutes = 43800;
+
     private readonly IConfiguration _config = config ?? throw new NotImplementedException();
 
     public async Task<string> BuildToken(IEnumerable<Claim> claims)
@@ -15,7 +16,7 @@ public class TokenBuilder(IConfiguration config)
         if (claims == null || !claims.Any())
             throw new ArgumentNullException(nameof(claims));
 
-        var key = _config.GetValue<string>("Authentication:Key") ?? throw new NotImplementedException();
+        var key = Environment.GetEnvironmentVariable("key") ?? throw new NotImplementedException();
         var tokenHandler = new JwtSecurityTokenHandler();
         var encodedKey = Encoding.UTF8.GetBytes(key) ?? throw new NotImplementedException();
         var tokenDescriptor = new SecurityTokenDescriptor()

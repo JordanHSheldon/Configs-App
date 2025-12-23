@@ -5,7 +5,7 @@ using Controllers.DTOs.Data;
 using Controllers.DTOs.User;
 using Controllers.DTOs;
 using Orchestrators.Models.User;
-using Repository.Entities.Data;
+using Repository;
 using Orchestrators.Models.Data;
 using Responses.User;
 
@@ -26,6 +26,7 @@ public class MappingProfile : Profile
         CreateMap<GetDataResponseModel, DataEntity>().ReverseMap();
         CreateMap<DataEntity, GetPaginatedUsersResponseModel>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+            .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
         CreateMap<GetPaginatedUsersRequestDTO,GetPaginatedUsersRequestModel>().ReverseMap();
         CreateMap<GetPaginatedUsersResponseDto,GetPaginatedUsersResponseModel>().ReverseMap();

@@ -15,4 +15,6 @@ public class GetDataResponseModel
     public string? HeadSet { get; set; }
 
     public string? Monitor { get; set; }
+
+    public string? Avatar { get;set; }
 }
