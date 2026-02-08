@@ -21,7 +21,7 @@ public class UserRepository() : IUserRepository
         parameters.Add("@p_discord_id", discordUserData.id, DbType.String);
         parameters.Add("@p_avatar", discordUserData.avatar, DbType.String);
 
-        string sql = "select * from discord_login_or_register_user( @p_email, @p_username, @p_discord_id, @p_avatar);";
+        string sql = "select * from discord_login_or_register_user(@p_email, @p_username, @p_discord_id, @p_avatar);";
         var userId = await connection.QueryFirstOrDefaultAsync<int>(sql,parameters);
 
         await connection.CloseAsync();

@@ -15,5 +15,5 @@ public interface IDataRepository
 
     Task<List<PeripheralEntity>> GetPeripheralsAsync();
 
-    Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateUserPeripheralsRequest request);
+    Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateProfileRequest request);
 }

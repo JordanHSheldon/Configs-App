@@ -15,6 +15,6 @@ public interface IDataOrchestrator
 
     Task<List<PeripheralModel>> GetPeripheralsAsync();
     
-    Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateUserPeripheralsRequest request);
+    Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateProfileRequest request);
     
 }

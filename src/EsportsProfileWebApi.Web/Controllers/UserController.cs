@@ -5,20 +5,26 @@ using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(IUserOrchestrator userOrchestrator,ILogger<UserController> logger) : Controller
+public class UserController(
+    IUserOrchestrator userOrchestrator,
+    IConfiguration config,
+    ILogger<UserController> logger,
+    IWebHostEnvironment env) : Controller
 {
     private readonly ILogger<UserController> _logger = logger;
 
     private readonly IUserOrchestrator _userOrchestrator = userOrchestrator
         ?? throw new NotImplementedException();
 
-    private readonly string redirect_uri = "https://app.configs.cc";
+    private readonly string redirect_uri = config["Authentication:redirect_URL"] ?? throw new NotImplementedException();
+
+    private readonly string discordLoginURL = config["Authentication:DiscordAuthUrl"] ?? throw new NotImplementedException();
 
     [HttpGet]
     [Route("DiscordLogin")]
     public IActionResult DiscordLogin()
     {
-        return Redirect("https://discord.com/oauth2/authorize?client_id=1362549805502431262&response_type=code&redirect_uri=https%3A%2F%2Fapp.configs.cc%2Fapi%2Fuser%2FDiscordRedirect&scope=identify+email");
+        return Redirect(discordLoginURL);
     }
 
     [HttpGet]
@@ -30,8 +36,8 @@ public class UserController(IUserOrchestrator userOrchestrator,ILogger<UserContr
         HttpContext.Response.Cookies.Append("user", result.Result, new CookieOptions
         {
             HttpOnly = false,
-            Secure = true,
-            SameSite = SameSiteMode.None
+            Secure = false,
+            SameSite = SameSiteMode.Lax,
         });
 
         return Redirect(redirect_uri);
@@ -41,18 +47,18 @@ public class UserController(IUserOrchestrator userOrchestrator,ILogger<UserContr
     [Route("SteamLogin")]
     public IActionResult SteamLogin()
     {
-           string steamOpenId = "https://steamcommunity.com/openid/login";
+        string steamOpenId = "https://steamcommunity.com/openid/login";
 
-            var returnTo = $"{redirect_uri}/api/user/SteamRedirect";
-            var realm = $"{redirect_uri}";
+        var returnTo = $"{config["Authentication:Issuer"]}/api/user/SteamRedirect";
+        var realm = $"{config["Authentication:Issuer"]}";
 
-            var query = new QueryString()
-                .Add("openid.ns", "http://specs.openid.net/auth/2.0")
-                .Add("openid.mode", "checkid_setup")
-                .Add("openid.return_to", returnTo)
-                .Add("openid.realm", realm)
-                .Add("openid.identity", "http://specs.openid.net/auth/2.0/identifier_select")
-                .Add("openid.claimed_id", "http://specs.openid.net/auth/2.0/identifier_select");
+        var query = new QueryString()
+            .Add("openid.ns", "http://specs.openid.net/auth/2.0")
+            .Add("openid.mode", "checkid_setup")
+            .Add("openid.return_to", returnTo)
+            .Add("openid.realm", realm)
+            .Add("openid.identity", "http://specs.openid.net/auth/2.0/identifier_select")
+            .Add("openid.claimed_id", "http://specs.openid.net/auth/2.0/identifier_select");
 
         return Redirect($"{steamOpenId}{query}");
     }
@@ -71,15 +77,16 @@ public class UserController(IUserOrchestrator userOrchestrator,ILogger<UserContr
 
             HttpContext.Response.Cookies.Append("user", result.Result, new CookieOptions
             {
-                HttpOnly = false,
-                Secure = true,
-                SameSite = SameSiteMode.None
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Lax
             });
         }
         catch(Exception e)
         {
             _logger.LogInformation(e.Message);   
         }
+
         return Redirect(redirect_uri);
     }
 }

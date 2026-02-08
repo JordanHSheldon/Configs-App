@@ -15,17 +15,16 @@ public class MappingProfile : Profile
     {
         CreateMap<GetDataResponseDTO, GetDataResponseModel>().ReverseMap();
         CreateMap<GetDataRequestDTO, GetDataRequestModel>().ReverseMap();
-        CreateMap<UpdateDataRequestDTO, UpdateDataRequestModel>().ReverseMap();
         CreateMap<UpdateDataResponseDTO, UpdateDataResponseModel>().ReverseMap();
         CreateMap<UpdateDataResponseModel, bool>().ReverseMap();
         CreateMap<UserLoginRequestDTO, UserLoginRequestModel>().ReverseMap();
-        CreateMap<UpdateUserPeripheralsRequestDto, UpdateUserPeripheralsRequest>();
+        CreateMap<UpdateProfileRequestDTO, UpdateProfileRequest>();
         CreateMap<UserRegisterRequestDTO, UserRegisterRequestModel>().ReverseMap();
         CreateMap<UserRegisterResponseDTO, UserRegisterResponseModel>().ReverseMap();
         CreateMap<UserLoginResponseDTO, UserLoginResponseModel>().ReverseMap();
         CreateMap<GetDataResponseModel, DataEntity>().ReverseMap();
         CreateMap<DataEntity, GetPaginatedUsersResponseModel>()
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+            .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
             .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
         CreateMap<GetPaginatedUsersRequestDTO,GetPaginatedUsersRequestModel>().ReverseMap();

@@ -1,8 +1,8 @@
-namespace EsportsProfileWebApi.Web.Controllers.DTOs.Data;
+namespace EsportsProfileWebApi.Web.Orchestrators.Models.Data;
 
-public class UpdateProfileRequestDTO
+public record UpdateProfileRequest
 {
-    public string? Id { get; set; }
+    public int UserId { get; set; }
 
     public string? Username { get; set; }
 
@@ -13,4 +13,5 @@ public class UpdateProfileRequestDTO
     public int MousepadId { get; set; }
 
     public int KeyboardId { get; set; }
+    
 }

@@ -2,19 +2,15 @@
 
 public class GetDataResponseModel
 {
-    public string? Id { get; set; }
+    public int Id { get; set; }
 
-    public string? UserName { get; set; }
-
-    public string? Mouse { get; set; }
-
-    public string? MousePad { get; set; }
-
-    public string? KeyBoard { get; set; }
-
-    public string? HeadSet { get; set; }
-
-    public string? Monitor { get; set; }
+    public string? Username { get; set; }
 
     public string? Avatar { get;set; }
+
+    public int MouseId { get; set; }
+    
+    public int MousepadId { get; set;}
+
+    public int KeyboardId { get; set;}
 }

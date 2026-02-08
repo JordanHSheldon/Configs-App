@@ -6,6 +6,7 @@ using Orchestrators;
 using Orchestrators.Models.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -14,8 +15,8 @@ public class ProfileController(
     ILogger<UserController> logger,
     IMapper mapper) : Controller
 {
-
     private readonly ILogger<UserController> _logger = logger;
+
     private readonly IDataOrchestrator _dataOrchestrator = dataOrchestrator
         ?? throw new NotImplementedException();
     private readonly IMapper _mapper = mapper
@@ -34,23 +35,22 @@ public class ProfileController(
     [Authorize]
     [HttpPost]
     [Route("GetUserProfile")]
-    public async Task<GetDataResponseDTO?> GetProfileData()
+    public async Task<IActionResult> GetProfileData()
     {
-        try {
-            var request = new GetProfileRequestModel
-            {
-                Id = HttpContext.User.Identity?.Name
-            };
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                ?? User.FindFirst("user")?.Value;
 
-            var result = await _dataOrchestrator.GetProfileData(request);
-            return _mapper.Map<GetDataResponseDTO>(result);
-        }
-        catch(Exception e)
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
+
+        var request = new GetProfileRequestModel
         {
-            _logger.LogError(e.Message);
-        }
+            Id = int.Parse(userId)
+        };
 
-        return null;
+        var result = await _dataOrchestrator.GetProfileData(request);
+
+        return Ok(_mapper.Map<GetDataResponseDTO>(result));
     }
 
     [HttpPost]
@@ -63,16 +63,11 @@ public class ProfileController(
     }
 
     [HttpPost]
-    [Route("UpdateUserPeripherals")]
-    public async Task<UpdateDataResponseDTO?> UpdateData(UpdateUserPeripheralsRequestDto request)
+    [Route("UpdateProfile")]
+    public async Task<UpdateDataResponseDTO?> UpdateProfile(UpdateProfileRequestDTO request)
     {
-        var userId = HttpContext.Request.Cookies["user_id"];
-        if (userId == null)
-            return null;
-            
-        var req = mapper.Map<UpdateUserPeripheralsRequest>(request);
-        var id = HttpContext?.User?.Claims?.First(c => c.Type == "Id")?.Value;
-        req.UserId = int.Parse(userId);
+        var req = mapper.Map<UpdateProfileRequest>(request);
+        req.UserId = int.Parse(HttpContext?.User?.Identity?.Name ?? throw new UnauthorizedAccessException()); 
         var result = await _dataOrchestrator.UpdateUserPeripherals(req);
         return _mapper.Map<UpdateDataResponseDTO>(result);
     }
@@ -82,6 +77,6 @@ public class ProfileController(
     public async Task<List<PeripheralDto>> GetPeripherals()
     {
         var result = await _dataOrchestrator.GetPeripheralsAsync();
-        return _mapper.Map<List<PeripheralDto>>(result);
+        return _mapper.Map<List<PeripheralDto>>(result.OrderBy(x => x.Id));
     }
 }

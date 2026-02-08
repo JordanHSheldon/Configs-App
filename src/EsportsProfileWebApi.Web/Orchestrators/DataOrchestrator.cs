@@ -39,7 +39,7 @@ public class DataOrchestrator(IDataRepository dataRepository, IMapper mapper) : 
         return _mapper.Map<List<PeripheralModel>>(result);
     }
     
-    public async Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateUserPeripheralsRequest request)
+    public async Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateProfileRequest request)
     {
         return await _dataRepository.UpdateUserPeripherals(request);
     }

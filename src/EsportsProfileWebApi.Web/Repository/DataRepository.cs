@@ -1,6 +1,5 @@
 ﻿namespace EsportsProfileWebApi.Web.Repository;
 
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Orchestrators.Models.Data;
 using Dapper;
@@ -19,20 +18,16 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        if(!int.TryParse(request.Id, out int userId))
-            throw new ArgumentException("Invalid user ID format.");
-
         DynamicParameters parameters = new ();
-        parameters.Add("@p_user_id",userId, dbType: DbType.String);
-        parameters.Add("@p_mouse", request.Mouse, dbType: DbType.String);
-        parameters.Add("@p_mouse_pad", request.MousePad, dbType: DbType.String);
-        parameters.Add("@p_head_set", request.HeadSet, dbType: DbType.String);
-        parameters.Add("@p_monitor", request.Monitor, dbType: DbType.String);
-        parameters.Add("@p_key_board", request.KeyBoard ,dbType: DbType.String);
+        parameters.Add("@p_user_id",request.Id, dbType: DbType.Int16);
+        parameters.Add("@p_mouse", request.MouseId, dbType: DbType.Int16);
+        parameters.Add("@p_mouse_pad", request.MousepadId, dbType: DbType.Int16);
+        parameters.Add("@p_key_board", request.KeyboardId ,dbType: DbType.Int16);
 
         await connection.ExecuteAsync("UpdateUserDataById", parameters, commandType: CommandType.StoredProcedure);
         
         await connection.CloseAsync();
+
         return new UpdateDataResponseModel { IsSuccessful = true };
     }
 
@@ -55,15 +50,9 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
     public async Task<DataEntity> GetProfileData(GetProfileRequestModel request)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        _logger.LogInformation($"DATA LOGGED :{request?.Id}");
-
-        if(Int32.TryParse(request?.Id, out int userId) == false)
-        {
-            throw new ArgumentException("Invalid user ID format.");
-        }
 
         DynamicParameters parameters = new ();
-        parameters.Add("@user_id", userId, dbType: DbType.Int16);
+        parameters.Add("@user_id", request.Id, dbType: DbType.Int16);
         
         await connection.OpenAsync();
 
@@ -79,11 +68,8 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
     {
         await using var connection = new NpgsqlConnection(_connectionString);
 
-        if(int.TryParse(request?.Id, out int userId) == false)
-            throw new ArgumentException("Invalid user ID format.");
-
         DynamicParameters parameters = new ();
-        parameters.Add("@user_id", userId, dbType: DbType.Int16);
+        parameters.Add("@user_id", request.Id, dbType: DbType.Int16);
         
         await connection.OpenAsync();
 
@@ -99,21 +85,13 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
-        try{
-            var sql = $"SELECT * FROM get_user_profiles();";
+        var sql = $"SELECT * FROM get_user_profiles();";
 
-            IEnumerable<DataEntity> users = await connection.QueryAsync<DataEntity>(sql);
+        IEnumerable<DataEntity> users = await connection.QueryAsync<DataEntity>(sql);
 
-            await connection.CloseAsync();
-            
-            return [..users];
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-
-        return [];
+        await connection.CloseAsync();
+        
+        return [..users];
     }
 
     public async Task<List<PeripheralEntity>> GetPeripheralsAsync()
@@ -129,20 +107,20 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
         return [..peripherals];
     }
 
-    public async Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateUserPeripheralsRequest request)
+    public async Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateProfileRequest request)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        var sql = @"INSERT INTO peripherals (peripheral_user_id, peripheral_picklist_peripherals_id) VALUES (@peripheral_user_id, @peripheral_picklist_peripherals_id);";
+        string newPeripheralsCSV = $"{request.KeyboardId},{request.MouseId},{request.MousepadId}";
 
-        var rows = request.PeripheralIds.AsEnumerable().Select(r => new
-        {
-            user_id = request.UserId,
-            picklist_peripheral_id = r
-        });
+        DynamicParameters parameters = new ();
+        parameters.Add("@user_id", request.UserId, dbType: DbType.Int16);
+        parameters.Add("@newPeripherals", newPeripheralsCSV, dbType: DbType.String);
 
-        await connection.ExecuteAsync(sql, rows);
+        var sql = "SELECT public.updateProfile(@user_id, @newPeripherals)";
+
+        var result = await connection.ExecuteAsync(sql,parameters);
 
         await connection.CloseAsync();
 

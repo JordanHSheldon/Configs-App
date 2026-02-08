@@ -8,13 +8,9 @@ public class ProfileEntity
 
     public string? Avatar { get; set; }
 
-    public string? Mouse { get; set; }
+    public int MouseId { get; set; }
 
-    public string? Mousepad { get; set; }
+    public int MousepadId { get; set; }
 
-    public string? Keyboard { get; set; }
-
-    public string? Headset { get; set; }
-
-    public string? Monitor { get; set; }
+    public int KeyboardId { get; set; }
 }

@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 using Helpers;
+using Microsoft.IdentityModel.Tokens;
 using Models.User;
 using Repository;
 
@@ -66,7 +67,7 @@ public class UserOrchestrator(IUserRepository userRepository, IConfiguration con
     private readonly string clientSecret = Environment.GetEnvironmentVariable("discord_client_secret")
         ?? throw new NotImplementedException();
 
-    private readonly string redirectURI = "https://app.configs.cc/api/user/DiscordRedirect";
+    private readonly string redirectURI = config["Authentication:Issuer"]+"/api/user/DiscordRedirect";
 
     private readonly string tokenURL = "https://discord.com/api/oauth2/token";
 
@@ -86,11 +87,9 @@ public class UserOrchestrator(IUserRepository userRepository, IConfiguration con
 
         using var client = new HttpClient();
         var response = await client.PostAsync(tokenURL, new FormUrlEncodedContent(values));
-
         if (!response.IsSuccessStatusCode)
         {
             var text = await response.Content.ReadAsStringAsync();
-
             return new UserLoginResponseModel { Result = ErrorResult};
         }
 
@@ -124,7 +123,7 @@ public class UserOrchestrator(IUserRepository userRepository, IConfiguration con
     public async Task<UserLoginResponseModel> SteamLogin(IQueryCollection qs)
     {
         string api_key = Environment.GetEnvironmentVariable("steam_api_key")
-        ?? throw new NotImplementedException();
+            ?? throw new NotImplementedException();
         
         // Validate openid via Steam
         var verificationUrl = "https://steamcommunity.com/openid/login";
@@ -140,7 +139,7 @@ public class UserOrchestrator(IUserRepository userRepository, IConfiguration con
         using var client = new HttpClient();
         var response = await client.PostAsync(verificationUrl, new FormUrlEncodedContent(form));
         var body = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation(body);
+
         // Steam responds with "is_valid:true"
         if (!body.Contains("is_valid:true")) return new UserLoginResponseModel { Result = NotFoundResult };
 
@@ -185,4 +184,4 @@ public class UserOrchestrator(IUserRepository userRepository, IConfiguration con
             Result = await _tokenBuilder.BuildToken([new Claim("user", userID.ToString())])
         };
     }
-}
+} 
