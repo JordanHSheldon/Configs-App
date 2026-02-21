@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// todo see if this is needed.
-// return bearer token somehow instead of 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -19,6 +17,8 @@ builder.Services.AddJwtAuthentication(builder);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerJwtBearer(); 
+builder.Services.AddSingleton<IPeripheralOrchestrator, PeripheralOrchestrator>();
+builder.Services.AddSingleton<IPeripheralRepository, PeripheralRepository>();
 builder.Services.AddSingleton<IDataOrchestrator, DataOrchestrator>();
 builder.Services.AddSingleton<IDataRepository, DataRepository>();
 builder.Services.AddSingleton<IUserOrchestrator, UserOrchestrator>();

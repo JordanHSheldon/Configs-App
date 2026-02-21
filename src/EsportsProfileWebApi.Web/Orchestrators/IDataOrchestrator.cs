@@ -1,11 +1,10 @@
 ﻿namespace EsportsProfileWebApi.Web.Orchestrators;
 
-using EsportsProfileWebApi.Web.Orchestrators.Models;
 using EsportsProfileWebApi.Web.Orchestrators.Models.Data;
 
 public interface IDataOrchestrator
 {
-    Task<GetDataResponseModel> GetData(GetDataRequestModel dataRequest);
+    Task<GetDataResponseModel?> GetUserDataByUsername(GetDataRequestModel dataRequest);
 
     Task<GetDataResponseModel> GetProfileData(GetProfileRequestModel dataRequest);
 
@@ -16,5 +15,4 @@ public interface IDataOrchestrator
     Task<List<PeripheralModel>> GetPeripheralsAsync();
     
     Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateProfileRequest request);
-    
 }

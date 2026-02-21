@@ -23,6 +23,7 @@ public class MappingProfile : Profile
         CreateMap<UserRegisterResponseDTO, UserRegisterResponseModel>().ReverseMap();
         CreateMap<UserLoginResponseDTO, UserLoginResponseModel>().ReverseMap();
         CreateMap<GetDataResponseModel, DataEntity>().ReverseMap();
+        CreateMap<GetDataResponseModel, ProfileEntity>().ReverseMap();
         CreateMap<DataEntity, GetPaginatedUsersResponseModel>()
             .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
             .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar))

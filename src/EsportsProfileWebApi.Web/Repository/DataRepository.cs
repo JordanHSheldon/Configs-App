@@ -31,7 +31,7 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
         return new UpdateDataResponseModel { IsSuccessful = true };
     }
 
-    public async Task<DataEntity> GetUserData(GetDataRequestModel request)
+    public async Task<ProfileEntity?> GetUserDataByUsername(GetDataRequestModel request)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
@@ -40,11 +40,11 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
         parameters.Add("@username", request.Username, dbType: DbType.String);
 
         string sql = "SELECT * FROM getProfilebyusername(@username);";
-        DataEntity profile = await connection.QuerySingleAsync<DataEntity>(sql, parameters);
+        var profile = await connection.QueryAsync<ProfileEntity>(sql, parameters);
 
         await connection.CloseAsync();
 
-        return profile ?? new DataEntity();
+        return profile?.FirstOrDefault();
     }
     
     public async Task<DataEntity> GetProfileData(GetProfileRequestModel request)

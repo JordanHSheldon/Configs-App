@@ -8,8 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 public class UserController(
     IUserOrchestrator userOrchestrator,
     IConfiguration config,
-    ILogger<UserController> logger,
-    IWebHostEnvironment env) : Controller
+    ILogger<UserController> logger) : Controller
 {
     private readonly ILogger<UserController> _logger = logger;
 
@@ -35,7 +34,7 @@ public class UserController(
 
         HttpContext.Response.Cookies.Append("user", result.Result, new CookieOptions
         {
-            HttpOnly = false,
+            HttpOnly = true,
             Secure = false,
             SameSite = SameSiteMode.Lax,
         });
@@ -78,7 +77,7 @@ public class UserController(
             HttpContext.Response.Cookies.Append("user", result.Result, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
+                Secure = true,
                 SameSite = SameSiteMode.Lax
             });
         }
@@ -88,5 +87,28 @@ public class UserController(
         }
 
         return Redirect(redirect_uri);
+    }
+
+    [HttpPost]
+    [Route("Logout")]
+    public async Task<IActionResult> Logout()
+    {    
+        HttpContext.Response.Cookies.Delete("user");
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("isLoggedIn")]
+    public async Task<IActionResult> IsLoggedIn()
+    {    
+        var userCookie = HttpContext.Request.Cookies["user"];
+
+        if (string.IsNullOrEmpty(userCookie))
+        {
+            return Ok(new { isLoggedIn = false });
+        }
+
+        return Ok(new { isLoggedIn = true });
     }
 }

@@ -23,8 +23,8 @@ public class ProfileController(
         ?? throw new NotImplementedException();
 
     [HttpPost]
-    [Route("GetUserProfiles")]
-    public async Task<IEnumerable<GetPaginatedUsersResponseDto>> GetPaginatedUsersAsync(
+    [Route("GetPaginatedProfiles")]
+    public async Task<IEnumerable<GetPaginatedUsersResponseDto>> GetPaginatedProfiles(
         GetPaginatedUsersRequestDTO req)
     {
         var request = _mapper.Map<GetPaginatedUsersRequestModel>(req);
@@ -34,8 +34,8 @@ public class ProfileController(
 
     [Authorize]
     [HttpPost]
-    [Route("GetUserProfile")]
-    public async Task<IActionResult> GetProfileData()
+    [Route("GetProfile")]
+    public async Task<IActionResult> GetProfile()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
                 ?? User.FindFirst("user")?.Value;
@@ -55,28 +55,22 @@ public class ProfileController(
 
     [HttpPost]
     [Route("GetProfileByUserName")]
-    public async Task<GetDataResponseDTO> GetProfileByUsername(GetDataRequestDTO getDataRequestDto)
+    public async Task<GetDataResponseDTO?> GetProfileByUsername(GetDataRequestDTO getDataRequestDto)
     {
         var request = _mapper.Map<GetDataRequestModel>(getDataRequestDto);
-        var result = await _dataOrchestrator.GetData(request);
-        return _mapper.Map<GetDataResponseDTO>(result);
+        var profile = await _dataOrchestrator.GetUserDataByUsername(request);
+        var result = _mapper.Map<GetDataResponseDTO>(profile);
+        return result;
     }
 
+    [Authorize]
     [HttpPost]
     [Route("UpdateProfile")]
     public async Task<UpdateDataResponseDTO?> UpdateProfile(UpdateProfileRequestDTO request)
     {
-        var req = mapper.Map<UpdateProfileRequest>(request);
+        var req = _mapper.Map<UpdateProfileRequest>(request);
         req.UserId = int.Parse(HttpContext?.User?.Identity?.Name ?? throw new UnauthorizedAccessException()); 
         var result = await _dataOrchestrator.UpdateUserPeripherals(req);
         return _mapper.Map<UpdateDataResponseDTO>(result);
-    }
-
-    [HttpPost]
-    [Route("GetPeripherals")]
-    public async Task<List<PeripheralDto>> GetPeripherals()
-    {
-        var result = await _dataOrchestrator.GetPeripheralsAsync();
-        return _mapper.Map<List<PeripheralDto>>(result.OrderBy(x => x.Id));
     }
 }

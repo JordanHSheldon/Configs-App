@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public interface IDataRepository
 {
-    Task<DataEntity> GetUserData(GetDataRequestModel dataRequest);
+    Task<ProfileEntity?> GetUserDataByUsername(GetDataRequestModel dataRequest);
 
     Task<DataEntity> GetProfileData(GetProfileRequestModel request);
 

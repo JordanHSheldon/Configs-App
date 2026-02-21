@@ -9,9 +9,9 @@ public class DataOrchestrator(IDataRepository dataRepository, IMapper mapper) : 
     private readonly IDataRepository _dataRepository = dataRepository ?? throw new NotImplementedException();
     private readonly IMapper _mapper = mapper ?? throw new NotImplementedException();
 
-    public async Task<GetDataResponseModel> GetData(GetDataRequestModel dataRequest)
+    public async Task<GetDataResponseModel?> GetUserDataByUsername(GetDataRequestModel dataRequest)
     {
-        var result = await _dataRepository.GetUserData(dataRequest);
+        var result = await _dataRepository.GetUserDataByUsername(dataRequest);
         return _mapper.Map<GetDataResponseModel>(result);
     }
 
