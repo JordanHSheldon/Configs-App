@@ -22,6 +22,7 @@ builder.Services.AddSingleton<IPeripheralRepository, PeripheralRepository>();
 builder.Services.AddSingleton<IDataOrchestrator, DataOrchestrator>();
 builder.Services.AddSingleton<IDataRepository, DataRepository>();
 builder.Services.AddSingleton<IUserOrchestrator, UserOrchestrator>();
+builder.Services.AddSingleton<IStatsOrchestrator, StatsOrchestrator>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddCustomCors(builder);

@@ -8,8 +8,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://127.0.0.1:5000/"
-    },
+      "applicationUrl": "http://127.0.0.1:5000"
+    }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
