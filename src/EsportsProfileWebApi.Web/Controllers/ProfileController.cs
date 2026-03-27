@@ -1,24 +1,30 @@
 ﻿namespace EsportsProfileWebApi.Web.Controllers;
 
 using AutoMapper;
-using DTOs.Data;
+using DTOs;
 using Orchestrators;
-using Orchestrators.Models.Data;
+using Orchestrators.Models.Profile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using EsportsProfileWebApi.Web.Controllers.DTOs.Profile;
 
 [Route("api/[controller]")]
 [ApiController]
 public class ProfileController(
-    IDataOrchestrator dataOrchestrator,
+    IProfileOrchestrator ProfileOrchestrator,
     ILogger<UserController> logger,
+    IStatsOrchestrator statsOrchestrator,
     IMapper mapper) : Controller
 {
     private readonly ILogger<UserController> _logger = logger;
 
-    private readonly IDataOrchestrator _dataOrchestrator = dataOrchestrator
+    private readonly IStatsOrchestrator statsOrchestrator = statsOrchestrator
         ?? throw new NotImplementedException();
+
+    private readonly IProfileOrchestrator _ProfileOrchestrator = ProfileOrchestrator
+        ?? throw new NotImplementedException();
+
     private readonly IMapper _mapper = mapper
         ?? throw new NotImplementedException();
 
@@ -28,7 +34,7 @@ public class ProfileController(
         GetPaginatedUsersRequestDTO req)
     {
         var request = _mapper.Map<GetPaginatedUsersRequestModel>(req);
-        var result = await _dataOrchestrator.GetPaginatedUsersAsync(request);
+        var result = await _ProfileOrchestrator.GetPaginatedUsersAsync(request);
         return _mapper.Map<List<GetPaginatedUsersResponseDto>>(result);
     }
 
@@ -48,29 +54,31 @@ public class ProfileController(
             Id = int.Parse(userId)
         };
 
-        var result = await _dataOrchestrator.GetProfileData(request);
+        var result = await _ProfileOrchestrator.GetProfileData(request);
 
-        return Ok(_mapper.Map<GetDataResponseDTO>(result));
+        return Ok(_mapper.Map<GetProfileResponseDTO>(result));
     }
 
     [HttpPost]
     [Route("GetProfileByUserName")]
-    public async Task<GetDataResponseDTO?> GetProfileByUsername(GetDataRequestDTO getDataRequestDto)
+    public async Task<GetProfileResponseDTO?> GetProfileByUsername(GetProfileByNameRequestDTO getProfileRequestDto)
     {
-        var request = _mapper.Map<GetDataRequestModel>(getDataRequestDto);
-        var profile = await _dataOrchestrator.GetUserDataByUsername(request);
-        var result = _mapper.Map<GetDataResponseDTO>(profile);
+        var request = _mapper.Map<GetProfileByNameRequestModel>(getProfileRequestDto);
+        var profile = await _ProfileOrchestrator.GetProfileByUsername(request);
+        var result = _mapper.Map<GetProfileResponseDTO>(profile);
+
         return result;
     }
 
     [Authorize]
     [HttpPost]
     [Route("UpdateProfile")]
-    public async Task<UpdateDataResponseDTO?> UpdateProfile(UpdateProfileRequestDTO request)
+    public async Task<UpdateProfileResponseDTO?> UpdateProfile(UpdateProfileRequestDTO request)
     {
         var req = _mapper.Map<UpdateProfileRequest>(request);
         req.UserId = int.Parse(HttpContext?.User?.Identity?.Name ?? throw new UnauthorizedAccessException()); 
-        var result = await _dataOrchestrator.UpdateUserPeripherals(req);
-        return _mapper.Map<UpdateDataResponseDTO>(result);
+        var result = await _ProfileOrchestrator.UpdateUserPeripherals(req);
+        
+        return _mapper.Map<UpdateProfileResponseDTO>(result);
     }
 }

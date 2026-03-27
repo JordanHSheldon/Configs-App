@@ -3,6 +3,7 @@ using EsportsProfileWebApi.Web.Extensions;
 using EsportsProfileWebApi.Web.Mapping;
 using EsportsProfileWebApi.Web.Orchestrators;
 using Microsoft.AspNetCore.HttpOverrides;
+using EsportsProfileWebApi.Web.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +20,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerJwtBearer(); 
 builder.Services.AddSingleton<IPeripheralOrchestrator, PeripheralOrchestrator>();
 builder.Services.AddSingleton<IPeripheralRepository, PeripheralRepository>();
-builder.Services.AddSingleton<IDataOrchestrator, DataOrchestrator>();
-builder.Services.AddSingleton<IDataRepository, DataRepository>();
+builder.Services.AddSingleton<IProfileOrchestrator, ProfileOrchestrator>();
+builder.Services.AddSingleton<IProfileRepository, ProfileRepository>();
 builder.Services.AddSingleton<IUserOrchestrator, UserOrchestrator>();
 builder.Services.AddSingleton<IStatsOrchestrator, StatsOrchestrator>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IStatsClient,StatsClient>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddCustomCors(builder);
 builder.Logging.AddConsole();

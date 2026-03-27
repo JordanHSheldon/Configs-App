@@ -1,4 +1,4 @@
-namespace EsportsProfileWebApi.Web.Controllers.DTOs.Data;
+namespace EsportsProfileWebApi.Web.Controllers.DTOs.Profile;
 
 public class GetPaginatedUsersRequestDTO 
 {

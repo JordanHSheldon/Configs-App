@@ -2,12 +2,15 @@ namespace EsportsProfileWebApi.Web.Orchestrators;
 
 using AutoMapper;
 using EsportsProfileWebApi.Web.Repository;
-using EsportsProfileWebApi.Web.Orchestrators.Models.Data;
+using EsportsProfileWebApi.Web.Orchestrators.Models.Peripheral;
 
-public class PeripheralOrchestrator(IDataRepository dataRepository, IMapper mapper) : IPeripheralOrchestrator
+public class PeripheralOrchestrator(IProfileRepository dataRepository, IMapper mapper) : IPeripheralOrchestrator
 {
-    private readonly IDataRepository _dataRepository = dataRepository ?? throw new NotImplementedException();
-    private readonly IMapper _mapper = mapper ?? throw new NotImplementedException();
+    private readonly IProfileRepository _dataRepository = dataRepository 
+        ?? throw new NotImplementedException();
+        
+    private readonly IMapper _mapper = mapper 
+        ?? throw new NotImplementedException();
 
     public async Task<List<PeripheralModel>> GetPeripheralsAsync()
     {

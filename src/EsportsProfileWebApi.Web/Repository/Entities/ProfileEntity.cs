@@ -1,10 +1,12 @@
-namespace EsportsProfileWebApi.Web.Repository;
+namespace EsportsProfileWebApi.Web.Repository.Entities;
 
 public class ProfileEntity
 {
     public int Id { get; set; }
 
     public string? Username { get; set; }
+
+    public string? SteamId { get; set;}
 
     public string? Avatar { get; set; }
 

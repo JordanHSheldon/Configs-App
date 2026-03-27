@@ -1,6 +1,6 @@
-﻿namespace EsportsProfileWebApi.Web.Orchestrators.Models.Data;
+﻿namespace EsportsProfileWebApi.Web.Orchestrators.Models.Profile;
 
-public class UpdateDataRequestModel
+public class GetProfileResponseModel
 {
     public int Id { get; set; }
 

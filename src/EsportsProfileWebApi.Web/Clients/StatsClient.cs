@@ -1,6 +1,8 @@
-namespace EsportsProfileWebApi.Web.Orchestrators;
+namespace EsportsProfileWebApi.Web.Clients;
 
-public class StatsOrchestrator : IStatsOrchestrator
+using EsportsProfileWebApi.Web.Orchestrators.Models.Stat;
+
+public class StatsClient : IStatsClient
 {
     private readonly int cs2AppId = 730;
 
@@ -20,11 +22,11 @@ public class StatsOrchestrator : IStatsOrchestrator
         return result;
     }
     
-    private async Task<Models.Stat.CS2Stats?> GetCs2StatsAsync(string steamId)
+    private async Task<CS2Stats?> GetCs2StatsAsync(string steamId)
     {
         string url = $"https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v2/?key={_apiKey}&steamid={steamId}&appid={cs2AppId}";
         
-        var cs2_stats = await _httpClient.GetFromJsonAsync<Models.Stat.CS2Stats>(url);
+        var cs2_stats = await _httpClient.GetFromJsonAsync<CS2Stats>(url);
         
         return cs2_stats;
     }

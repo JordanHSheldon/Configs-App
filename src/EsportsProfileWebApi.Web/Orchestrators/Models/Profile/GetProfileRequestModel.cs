@@ -1,4 +1,4 @@
-﻿namespace EsportsProfileWebApi.Web.Orchestrators.Models.Data;
+﻿namespace EsportsProfileWebApi.Web.Orchestrators.Models.Profile;
 
 public class GetProfileRequestModel
 {

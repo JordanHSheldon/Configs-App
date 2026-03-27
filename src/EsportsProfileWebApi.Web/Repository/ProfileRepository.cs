@@ -1,19 +1,20 @@
 ﻿namespace EsportsProfileWebApi.Web.Repository;
 
 using System.Collections.Generic;
-using Orchestrators.Models.Data;
+using Orchestrators.Models.Profile;
 using Dapper;
 using System.Data;
 using Npgsql;
+using EsportsProfileWebApi.Web.Repository.Entities;
 
-public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
+public class ProfileRepository(ILogger<ProfileRepository> logger) : IProfileRepository
 {
     private readonly string _connectionString = Environment.GetEnvironmentVariable("connection_string")
         ?? throw new NotImplementedException();
     
-    private readonly ILogger<DataRepository> _logger = logger;
+    private readonly ILogger<ProfileRepository> _logger = logger;
 
-    public async Task<UpdateDataResponseModel> UpdateData(UpdateDataRequestModel request)
+    public async Task<UpdateProfileResponseModel> UpdateData(UpdateProfileRequestModel request)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
@@ -28,10 +29,10 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
         
         await connection.CloseAsync();
 
-        return new UpdateDataResponseModel { IsSuccessful = true };
+        return new UpdateProfileResponseModel { IsSuccessful = true };
     }
 
-    public async Task<ProfileEntity?> GetUserDataByUsername(GetDataRequestModel request)
+    public async Task<ProfileEntity?> GetProfileByUsername(GetProfileByNameRequestModel request)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
@@ -47,7 +48,7 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
         return profile?.FirstOrDefault();
     }
     
-    public async Task<DataEntity> GetProfileData(GetProfileRequestModel request)
+    public async Task<ProfileEntity> GetProfileData(GetProfileRequestModel request)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
 
@@ -57,7 +58,7 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
         await connection.OpenAsync();
 
         string sql = "SELECT * FROM getProfile(@user_id);";
-        DataEntity profile = await connection.QuerySingleAsync<DataEntity>(sql, parameters);
+        ProfileEntity profile = await connection.QuerySingleAsync<ProfileEntity>(sql, parameters);
 
         await connection.CloseAsync();
 
@@ -81,13 +82,13 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
         return profile;
     }
 
-    public async Task<List<DataEntity>> GetPaginatedUsersAsync(GetPaginatedUsersRequestModel req)
+    public async Task<List<ProfileEntity>> GetPaginatedUsersAsync(GetPaginatedUsersRequestModel req)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
         var sql = $"SELECT * FROM get_user_profiles();";
 
-        IEnumerable<DataEntity> users = await connection.QueryAsync<DataEntity>(sql);
+        var users = await connection.QueryAsync<ProfileEntity>(sql);
 
         await connection.CloseAsync();
         
@@ -107,7 +108,7 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
         return [..peripherals];
     }
 
-    public async Task<UpdateDataResponseModel> UpdateUserPeripherals(UpdateProfileRequest request)
+    public async Task<UpdateProfileResponseModel> UpdateUserPeripherals(UpdateProfileRequest request)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
@@ -124,6 +125,6 @@ public class DataRepository(ILogger<DataRepository> logger) : IDataRepository
 
         await connection.CloseAsync();
 
-        return new UpdateDataResponseModel { IsSuccessful = true };
+        return new UpdateProfileResponseModel { IsSuccessful = true };
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace EsportsProfileWebApi.Web.Controllers.DTOs.Data;
+namespace EsportsProfileWebApi.Web.Controllers.DTOs.Profile;
 
-public class GetDataResponseDTO
+public class UpdateProfileRequestDTO
 {
     public string? Id { get; set; }
 
