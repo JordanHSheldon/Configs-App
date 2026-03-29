@@ -17,12 +17,12 @@ public class ProfileOrchestrator(
     public async Task<GetProfileResponseModel?> GetProfileByUsername(GetProfileByNameRequestModel dataRequest)
     {
         var result = await profileRepository.GetProfileByUsername(dataRequest);
-        if(result is not null)
-        {
-            var stats = await statsClient.GetStatsBySteamId(result?.SteamId ?? "");
-        }
+        // if(result is not null)
+        // {
+        //     var stats = await statsClient.GetStatsBySteamId(result?.SteamId ?? "");
+        // }
 
-        return _mapper.Map<GetProfileResponseModel>(result);
+        return _mapper.Map<GetProfileResponseModel?>(result);
     }
 
     public async Task<GetProfileResponseModel> GetProfileData(GetProfileRequestModel dataRequest)

@@ -13,4 +13,6 @@ public class GetProfileResponseDTO
     public int MousepadId { get; set; }
 
     public int KeyboardId { get; set; }
+
+    public Dictionary<string, object?> Stats { get; set; } = [];
 }

@@ -13,4 +13,6 @@ public class GetProfileResponseModel
     public int MousepadId { get; set;}
 
     public int KeyboardId { get; set;}
+
+    public Dictionary<string,object?> Stats { get; set; } = [];
 }

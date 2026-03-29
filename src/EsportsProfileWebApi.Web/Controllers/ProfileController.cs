@@ -1,7 +1,6 @@
 ﻿namespace EsportsProfileWebApi.Web.Controllers;
 
 using AutoMapper;
-using DTOs;
 using Orchestrators;
 using Orchestrators.Models.Profile;
 using Microsoft.AspNetCore.Authorization;
@@ -14,13 +13,9 @@ using EsportsProfileWebApi.Web.Controllers.DTOs.Profile;
 public class ProfileController(
     IProfileOrchestrator ProfileOrchestrator,
     ILogger<UserController> logger,
-    IStatsOrchestrator statsOrchestrator,
     IMapper mapper) : Controller
 {
     private readonly ILogger<UserController> _logger = logger;
-
-    private readonly IStatsOrchestrator statsOrchestrator = statsOrchestrator
-        ?? throw new NotImplementedException();
 
     private readonly IProfileOrchestrator _ProfileOrchestrator = ProfileOrchestrator
         ?? throw new NotImplementedException();
@@ -35,6 +30,7 @@ public class ProfileController(
     {
         var request = _mapper.Map<GetPaginatedUsersRequestModel>(req);
         var result = await _ProfileOrchestrator.GetPaginatedUsersAsync(request);
+        
         return _mapper.Map<List<GetPaginatedUsersResponseDto>>(result);
     }
 
@@ -65,7 +61,7 @@ public class ProfileController(
     {
         var request = _mapper.Map<GetProfileByNameRequestModel>(getProfileRequestDto);
         var profile = await _ProfileOrchestrator.GetProfileByUsername(request);
-        var result = _mapper.Map<GetProfileResponseDTO>(profile);
+        var result = _mapper.Map<GetProfileResponseDTO?>(profile);
 
         return result;
     }
