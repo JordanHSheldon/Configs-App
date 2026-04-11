@@ -3,7 +3,6 @@
 using AutoMapper;
 using EsportsProfileWebApi.Web.Repository;
 using EsportsProfileWebApi.Web.Orchestrators.Models.Profile;
-using EsportsProfileWebApi.Web.Orchestrators.Models.Peripheral;
 using EsportsProfileWebApi.Web.Clients;
 
 public class ProfileOrchestrator(
@@ -11,18 +10,22 @@ public class ProfileOrchestrator(
     IMapper mapper,
     IStatsClient statsClient) : IProfileOrchestrator
 {
-    private readonly IProfileRepository profileRepository = dataRepository ?? throw new NotImplementedException();
-    private readonly IMapper _mapper = mapper ?? throw new NotImplementedException();
+    private readonly IProfileRepository profileRepository = dataRepository 
+        ?? throw new NotImplementedException();
+    private readonly IMapper _mapper = mapper 
+        ?? throw new NotImplementedException();
 
     public async Task<GetProfileResponseModel?> GetProfileByUsername(GetProfileByNameRequestModel dataRequest)
     {
         var result = await profileRepository.GetProfileByUsername(dataRequest);
-        // if(result is not null)
-        // {
-        //     var stats = await statsClient.GetStatsBySteamId(result?.SteamId ?? "");
-        // }
 
-        return _mapper.Map<GetProfileResponseModel?>(result);
+        var temp = _mapper.Map<GetProfileResponseModel?>(result);
+        if(temp is not null && result?.SteamId?.Length > 0)
+        {
+            temp.Stats = await statsClient.GetStatsBySteamId(result?.SteamId ?? "");
+        }
+
+        return temp;
     }
 
     public async Task<GetProfileResponseModel> GetProfileData(GetProfileRequestModel dataRequest)
@@ -43,12 +46,6 @@ public class ProfileOrchestrator(
         return _mapper.Map<List<GetPaginatedUsersResponseModel>>(result);
     }
 
-    public async Task<List<PeripheralModel>> GetPeripheralsAsync()
-    {
-        var result = await profileRepository.GetPeripheralsAsync();
-        return _mapper.Map<List<PeripheralModel>>(result);
-    }
-    
     public async Task<UpdateProfileResponseModel> UpdateUserPeripherals(UpdateProfileRequest request)
     {
         return await profileRepository.UpdateUserPeripherals(request);

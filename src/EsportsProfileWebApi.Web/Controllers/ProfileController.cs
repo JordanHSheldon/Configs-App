@@ -12,10 +12,10 @@ using EsportsProfileWebApi.Web.Controllers.DTOs.Profile;
 [ApiController]
 public class ProfileController(
     IProfileOrchestrator ProfileOrchestrator,
-    ILogger<UserController> logger,
+    ILogger<ProfileController> logger,
     IMapper mapper) : Controller
 {
-    private readonly ILogger<UserController> _logger = logger;
+    private readonly ILogger<ProfileController> _logger = logger;
 
     private readonly IProfileOrchestrator _ProfileOrchestrator = ProfileOrchestrator
         ?? throw new NotImplementedException();
