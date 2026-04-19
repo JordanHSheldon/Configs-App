@@ -1,5 +1,4 @@
-name: Build, Replace Secrets, Test, and Publish Private Package
-
+name: Build and test applications
 on:
   workflow_dispatch: {}
   push:
