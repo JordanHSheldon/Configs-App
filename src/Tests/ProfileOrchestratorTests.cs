@@ -3,11 +3,9 @@
 using AutoMapper;
 using EsportsProfileWebApi.Web.Repository;
 using EsportsProfileWebApi.Web.Orchestrators;
-using NUnit.Framework;
 using EsportsProfileWebApi.Web.Clients;
 using NSubstitute;
 
-[TestFixture]
 public class ProfileOrchestratorTests
 {
     private readonly IProfileRepository mockProfileRepository = Substitute.For<IProfileRepository>();
@@ -29,7 +27,7 @@ public class ProfileOrchestratorTests
         //ACT
 
         //ASSERT
-        Assert.AreEqual(1,1);
+        Assert.Equals(1,1);
     }
 
     public async Task GetProfileData()

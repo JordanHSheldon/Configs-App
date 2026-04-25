@@ -7,7 +7,6 @@ using EsportsProfileWebApi.Web.Orchestrators;
 using EsportsProfileWebApi.Web.Orchestrators.Models.Profile;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using NUnit.Framework;
 
 public class ProfileControllerTests
 {
@@ -43,7 +42,7 @@ public class ProfileControllerTests
         var result = await _ProfileController.GetPaginatedProfiles(request);
 
         // Assert
-        Assert.IsNotNull(result);
+        Assert.NotNull(result);
         await ProfileOrchestrator.Received().GetPaginatedUsersAsync(orchReq);
     }
 

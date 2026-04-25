@@ -4,9 +4,7 @@ using AutoMapper;
 using EsportsProfileWebApi.Web.Controllers;
 using EsportsProfileWebApi.Web.Orchestrators;
 using Moq;
-using NUnit.Framework;
 
-[TestFixture]
 public class UserControllerTests
 {
     private readonly UserController _userController;
