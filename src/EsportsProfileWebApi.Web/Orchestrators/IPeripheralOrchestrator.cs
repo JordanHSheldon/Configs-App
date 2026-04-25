@@ -1,6 +1,6 @@
 namespace EsportsProfileWebApi.Web.Orchestrators;
 
-using EsportsProfileWebApi.Web.Orchestrators.Models.Data;
+using EsportsProfileWebApi.Web.Orchestrators.Models.Peripheral;
 
 public interface IPeripheralOrchestrator
 {

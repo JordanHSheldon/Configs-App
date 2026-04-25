@@ -1,5 +1,4 @@
-name: Build, Replace Secrets, Test, and Publish Private Package
-
+name: Build and test applications
 on:
   workflow_dispatch: {}
   push:
@@ -24,11 +23,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-
-      - name: Replace secrets in appsettings.json
-        run: |
-          sed -i "s|{{ CONNECTION_STRING }}|${{ secrets.CONNECTION_STRING }}|g" ./appsettings.json
-          sed -i "s|{{ AUTHENTICATION_KEY }}|${{ secrets.AUTHENTICATION_KEY }}|g" ./appsettings.json
 
       - name: Restore dependencies
         run: dotnet restore

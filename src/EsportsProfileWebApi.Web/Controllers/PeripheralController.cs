@@ -1,12 +1,10 @@
 namespace EsportsProfileWebApi.Web.Controllers;
 
 using AutoMapper;
-using DTOs.Data;
 using Orchestrators;
-using Orchestrators.Models.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using EsportsProfileWebApi.Web.Controllers.DTOs.Profile;
 
 [Route("api/[controller]")]
 [ApiController]
